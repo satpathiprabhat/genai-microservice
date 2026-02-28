@@ -11,8 +11,7 @@ load_dotenv("../.env")
 app = FastAPI()
 
 # Validate API Key exists before starting
-#api_key = os.getenv("GOOGLE_API_KEY")
-api_key = "AIzaSyA-pmnfaCer5kSoYq2xAT-6M8Z0oaH8V_M"
+api_key = os.getenv("GOOGLE_API_KEY")
 if not api_key:
     print("CRITICAL ERROR: GOOGLE_API_KEY not found in environment!")
 
