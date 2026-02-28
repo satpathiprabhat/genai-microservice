@@ -8,7 +8,9 @@ from dotenv import load_dotenv
 load_dotenv() 
 load_dotenv("../.env") 
 
-app = FastAPI()
+app = FastAPI(title="Writer API",
+    description="FastAPI wrapper for the session_7.",
+    version="0.1.0")
 
 # Validate API Key exists before starting
 api_key = os.getenv("GOOGLE_API_KEY")
@@ -32,4 +34,5 @@ async def write_task(state: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8002)
+    port = int(os.environ.get("PORT", 8002))
+    uvicorn.run(app, host="0.0.0.0", port=port)

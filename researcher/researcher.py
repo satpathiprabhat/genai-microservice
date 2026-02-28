@@ -1,7 +1,9 @@
 import uvicorn
 from fastapi import FastAPI, HTTPException
-
-app = FastAPI()
+import os
+app = FastAPI(title="Researcher API",
+    description="FastAPI wrapper for the session_7.",
+    version="0.1.0")
 
 @app.post("/research")
 async def research_task(state: dict):
@@ -16,4 +18,5 @@ async def research_task(state: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8001)
+    port = int(os.environ.get("PORT", 8001))
+    uvicorn.run(app, host="0.0.0.0", port=port)
