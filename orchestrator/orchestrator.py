@@ -5,6 +5,13 @@ from fastapi import FastAPI, HTTPException
 from typing import TypedDict
 from langgraph.graph import StateGraph, END
 from dotenv import load_dotenv
+import logging
+import google.cloud.logging
+
+# Initialize the GCP Logging Client
+client = google.cloud.logging.Client()
+# Connects standard Python logging to Google Cloud
+client.setup_logging()
 
 load_dotenv()
 load_dotenv("../.env")
@@ -20,7 +27,8 @@ class GraphState(TypedDict, total=False):
     topic: str
     research_notes: str
     draft: str
-
+# Example: Log when the Orchestrator starts
+    logging.info("Orchestrator Service is starting up..")
 def call_researcher(state: GraphState):
     print("--- Calling Researcher (8001) ---")
     response = requests.post(f"{RESEARCHER_URL}/research", json=state)
