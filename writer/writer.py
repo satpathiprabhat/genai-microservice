@@ -3,10 +3,17 @@ import os
 from fastapi import FastAPI, HTTPException
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
-
+import logging
+import google.cloud.logging
+from prometheus_fastapi_instrumentator import Instrumentator
 # Look for .env in the current folder OR one level up
 load_dotenv() 
 load_dotenv("../.env") 
+
+# Initialize the GCP Logging Client
+#client = google.cloud.logging.Client()
+# Connects standard Python logging to Google Cloud
+#client.setup_logging()
 
 app = FastAPI(title="Writer API",
     description="FastAPI wrapper for the session_7.",
@@ -15,9 +22,11 @@ app = FastAPI(title="Writer API",
 # Validate API Key exists before starting
 api_key = os.getenv("GOOGLE_API_KEY")
 if not api_key:
-    print("CRITICAL ERROR: GOOGLE_API_KEY not found in environment!")
+    raise RuntimeError("GOOGLE_API_KEY not configured in environment")
+else:
+    print(f"DEBUG: GOOGLE_API_KEY loaded. Length={len(api_key)} Prefix={api_key[:5]}")
 
-llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=api_key)
+llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", api_key=api_key)
 
 @app.post("/write")
 async def write_task(state: dict):
