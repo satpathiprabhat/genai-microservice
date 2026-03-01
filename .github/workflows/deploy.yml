@@ -6,7 +6,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: us-central1
-  REPO_NAME: my-genai-repo
+  REPO_NAME: genai-microservice
 
 jobs:
   # --- STAGE 1: DEPLOY RESEARCHER & WRITER ---
@@ -44,7 +44,11 @@ jobs:
           region: ${{ env.REGION }}
           flags: '--allow-unauthenticated'
           # We also inject your Gemini API Key here
-          env_vars: GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}
+          env_vars: |-
+            GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}
+            LANGCHAIN_API_KEY=${{ secrets.LANGCHAIN_API_KEY }}
+            LANGCHAIN_TRACING_V2=true
+            LANGCHAIN_PROJECT=${{ secrets.LANGCHAIN_PROJECT }}
 
   # --- STAGE 2: DEPLOY ORCHESTRATOR WITH DYNAMIC URLS ---
   deploy-orchestrator:
@@ -67,6 +71,10 @@ jobs:
           region: ${{ env.REGION }}
           flags: '--allow-unauthenticated'
           # THE MAPPING: This is how the URLs reach your Python code!
-          env_vars: |
+          env_vars: |-
             RESEARCHER_URL=${{ needs.deploy-nodes.outputs.researcher_url }}
             WRITER_URL=${{ needs.deploy-nodes.outputs.writer_url }}
+            LANGCHAIN_API_KEY=${{ secrets.LANGCHAIN_API_KEY }}
+            LANGCHAIN_TRACING_V2=true
+            LANGCHAIN_PROJECT=${{ secrets.LANGCHAIN_PROJECT }}
+            GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}
