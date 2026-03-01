@@ -18,5 +18,5 @@ async def research_task(state: dict):
         raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8001))
+    port = int(os.environ.get("PORT"))
     uvicorn.run(app, host="0.0.0.0", port=port)
