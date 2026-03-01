@@ -7,6 +7,7 @@ from langgraph.graph import StateGraph, END
 from dotenv import load_dotenv
 import logging
 import google.cloud.logging
+from prometheus_fastapi_instrumentator import Instrumentator
 
 # Initialize the GCP Logging Client
 client = google.cloud.logging.Client()
@@ -22,6 +23,8 @@ WRITER_URL = os.getenv("WRITER_URL")
 app = FastAPI(title="Orchestrator API",
     description="FastAPI wrapper for the session_7.",
     version="0.1.0")
+
+Instrumentator().instrument(app).expose(app)
 
 class GraphState(TypedDict, total=False):
     topic: str
